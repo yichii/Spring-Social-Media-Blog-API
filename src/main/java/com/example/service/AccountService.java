@@ -21,6 +21,10 @@ public class AccountService {
     }
 
     public Account addAccount(Account account) {
+        boolean accountTaken = accountRepository.existsByUsername(account.getUsername());
+        if (account.getUsername().isBlank() && account.getPassword().length() < 4 && accountTaken) {
+            return null;
+        } 
         return accountRepository.save(account);
     }
 
@@ -33,11 +37,4 @@ public class AccountService {
         }
     }
 
-    public List<Message> getAllMessagesByAccountId(Integer accountId) {
-        if (accountRepository.existsById(accountId)) {
-            return accountRepository.findAllMessagesByAccountId(accountId);
-        } else {
-            return null;
-        }
-    }
 }

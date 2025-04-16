@@ -13,7 +13,7 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     @Query("FROM Account WHERE username = :usernameVar AND password = :passwordVar")
     Optional<Account> findByUsernameAndPassword(@Param("usernameVar") String username, @Param("passwordVar") String password);
 
-    @Query("FROM Message WHERE postedBy = :postedByVar")
-    List<Message> findAllMessagesByAccountId(@Param("postedByVar") Integer postedBy);
+    @Query("SELECT COUNT(Account) FROM Account WHERE username = :usernameVar")
+    boolean existsByUsername(@Param("usernameVar") String username);
 }
 

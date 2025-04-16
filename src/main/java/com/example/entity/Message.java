@@ -2,8 +2,6 @@ package com.example.entity;
 
 import javax.persistence.*;
 
-import org.springframework.http.ResponseEntity;
-
 /**
  * This is a class that models a Message.
  *
@@ -174,10 +172,4 @@ public class Message {
                 ", timePostedEpoch=" + timePostedEpoch +
                 '}';
     }
-    public ResponseEntity<Message> map(Object ok) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'map'");
-    }
-
-
 }
