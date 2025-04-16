@@ -1,13 +1,14 @@
 package com.example.service;
 
-import java.util.List;
-import java.util.Optional;
 import com.example.entity.Message;
 import com.example.repository.AccountRepository;
 import com.example.repository.MessageRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+
 
 @Service
 @Transactional
@@ -48,6 +49,15 @@ public class MessageService {
         return messageRepository.findAll();
     }
 
+    /***
+     * The response body should contain a JSON representation of the message
+     * identified by the messageId. It is expected for the response body to simply
+     * be empty if there is no such message. The response status should always be
+     * 200, which is the default.
+     * 
+     * @param id
+     * @return The message if found in database but not if nothing is found.
+     */
     public Message findMessageById(Integer id) {
         Optional<Message> optionalMessage = messageRepository.findById(id);
         if (optionalMessage.isPresent()) {
@@ -57,6 +67,14 @@ public class MessageService {
         }
     }
 
+    /**
+     * The deletion of an existing message should remove an existing message from
+     * the database.
+     * 
+     * @param id
+     * @return If the message existed, the response body should contain the
+     *         number of rows updated (1) and null if nothing was deleted.
+     */
     public Integer deleteMessage(Integer id) {
         Optional<Message> optionalMessage = messageRepository.findById(id);
         if (optionalMessage.isPresent()) {
@@ -66,6 +84,17 @@ public class MessageService {
         return null;
     }
 
+    /**
+     * The update of a message should be successful if and only if the message id
+     * already exists and the new messageText is not blank and is not over 255
+     * characters.
+     * 
+     * @param id      The messageId
+     * @param message JSON representation of the message that doesn't contain that
+     *                does not contain messageId
+     * @return If the update is successful, the response body should contain the
+     *         number of rows updated (1) and null if nothing was updated
+     */
     public Integer updateMessageById(Integer id, Message message) {
         Optional<Message> optionalMessage = messageRepository.findById(id);
         if (optionalMessage.isPresent() && message.getMessageText().length() < 255
@@ -78,6 +107,14 @@ public class MessageService {
         return null;
     }
 
+    /**
+     * Retrieves all messages from a particular user based on accountId
+     * 
+     * @param accountId
+     * @return The response body should contain a JSON representation of a list
+     *         containing all messages posted by a particular user, which is retrieved from the
+     *         database. It is expected for the list to simply be empty if there are no messages.
+     */
     public List<Message> getAllMessagesByAccountId(Integer accountId) {
         return messageRepository.findAllMessagesByAccountId(accountId);
     }

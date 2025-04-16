@@ -23,12 +23,27 @@ public class SocialMediaController {
     @Autowired
     private AccountService accountService;
 
+    /**
+     * Registers an account if conditions are met(See accountService)
+     * 
+     * @param account
+     * @return 409 desired username already exists
+     *         400 any other credential requirement not met
+     *         200 registration success
+     */
     @PostMapping("/register")
     public ResponseEntity<Object> userRegistration(@RequestBody Account account) {
-        Account retrievedAccount = accountService.addAccount(account);
+        Account retrievedAccount = accountService.register(account);
         return ResponseEntity.ok(retrievedAccount);
     }
 
+    /**
+     * Verifies if account exists in database
+     * 
+     * @param account
+     * @return 404 wrong credentials
+     *         200 verfication success
+     */
     @PostMapping("/login")
     public ResponseEntity<Object> userLogin(@RequestBody Account account) {
         String username = account.getUsername();
@@ -40,6 +55,13 @@ public class SocialMediaController {
         return ResponseEntity.ok(accountService.login(account.getUsername(), account.getPassword()));
     }
 
+    /**
+     * Creates a message if conditions are met(See messageService)
+     * 
+     * @param message
+     * @return 400 message creation condition not met
+     *         200 message creation succes
+     */
     @PostMapping("/messages")
     public ResponseEntity<Object> createMessage(@RequestBody Message message) {
         if (messageService.addMessage(message) == null) {
@@ -48,29 +70,62 @@ public class SocialMediaController {
         return ResponseEntity.ok(messageService.addMessage(message));
     }
 
+    /**
+     * Retrieves all messages
+     * 
+     * @return 200 regardless of whether there's any retrieved messages
+     */
     @GetMapping("/messages")
     public ResponseEntity<List<Message>> retriveAllMessages() {
         return ResponseEntity.ok(messageService.getAllMessages());
     }
 
+    /**
+     * Retrieves a message based on messageId
+     * 
+     * @param messageId
+     * @return 200 regardless of whether there's any retrieved message from
+     *         messageId
+     */
     @GetMapping("/messages/{messageId}")
     public ResponseEntity<Message> retrieveMessageByMessageId(@PathVariable Integer messageId) {
         return ResponseEntity.ok(messageService.findMessageById(messageId));
     }
 
+    /**
+     * Deletes a message based on messageId
+     * 
+     * @param messageId
+     * @return 200 regardless of whether there's any deleted message from
+     *         messageId
+     */
     @DeleteMapping("/messages/{messageId}")
     public ResponseEntity<Integer> deleteMessageByMessageId(@PathVariable Integer messageId) {
         return ResponseEntity.ok(messageService.deleteMessage(messageId));
     }
 
+    /**
+     * Updates a message based on messageId
+     * 
+     * @param messageId
+     * @param message
+     * @return 400 message update condition not met
+     *         200 message update succes
+     */
     @PatchMapping("/messages/{messageId}")
-    public ResponseEntity updateMessage(@PathVariable Integer messageId, @RequestBody Message message) {
+    public ResponseEntity<Object> updateMessage(@PathVariable Integer messageId, @RequestBody Message message) {
         if (messageService.updateMessageById(messageId, message) == null) {
             return ResponseEntity.badRequest().body("Bad Request");
         }
         return ResponseEntity.ok(messageService.updateMessageById(messageId, message));
     }
 
+    /**
+     * Retrieves all messages from particular user
+     * 
+     * @param accountId
+     * @return 200 regardless if theres any retrieved messages from particular user
+     */
     @GetMapping("/accounts/{accountId}/messages")
     public ResponseEntity<List<Message>> retrieveAllMessagesForUser(@PathVariable Integer accountId) {
         return ResponseEntity.ok(messageService.getAllMessagesByAccountId(accountId));
