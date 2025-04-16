@@ -34,14 +34,10 @@ public class AccountService {
     }
 
     public List<Message> getAllMessagesByAccountId(Integer accountId) {
-        return accountRepository.findAllMessagesByAccountId(accountId);
+        if (accountRepository.existsById(accountId)) {
+            return accountRepository.findAllMessagesByAccountId(accountId);
+        } else {
+            return null;
+        }
     }
-    
-
-    /**
-     * TODO: 
-     * -addAccount
-     * -findAccountByUsername
-     * -getAllMessagesFromAccountId
-     */
 }

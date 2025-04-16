@@ -42,17 +42,20 @@ public class SocialMediaController {
         return ResponseEntity.ok(messageService.getAllMessages());
     }
 
-    @GetMapping("/messages/{message_id}")
+    @GetMapping("/messages/{messageId}")
     public ResponseEntity<Message> retrieveMessageByMessageId(@PathVariable Integer messageId) {
-        return messageService.findMessageById(messageId).map(ResponseEntity.ok());
+        return ResponseEntity.ok(messageService.findMessageById(messageId));
     }
     
-    // @DeleteMapping("/messages/{message_id}")
-    // public ResponseEntity deleteMessageByMessageId(@PathVariable Integer id) {
-    //     messageService.deleteMessage(id);
-    //     return ResponseEntity.ok().build();
-    // }
+    @DeleteMapping("/messages/{messageId}")
+    public ResponseEntity<Integer> deleteMessageByMessageId(@PathVariable Integer messageId) {
+        return ResponseEntity.ok(messageService.deleteMessage(messageId));
+    }
 
-    // @PatchMapping("/messages/{message_id}")
-    // @GetMapping("accounts/{account_id}/messages")
+    // @PatchMapping("/messages/{messageId}")
+
+    @GetMapping("/accounts/{accountId}/messages")
+    public ResponseEntity<List<Message>> retrieveAllMessagesForUser(@PathVariable Integer accountId) {
+        return ResponseEntity.ok(accountService.getAllMessagesByAccountId(accountId));
+    }
 }
