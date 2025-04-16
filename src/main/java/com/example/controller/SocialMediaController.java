@@ -6,6 +6,7 @@ import com.example.entity.Account;
 import com.example.service.MessageService;
 import com.example.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,26 +20,28 @@ import org.springframework.web.bind.annotation.RestController;
 public class SocialMediaController {
     @Autowired
     private MessageService messageService;
+    @Autowired
     private AccountService accountService;
 
     @PostMapping("/register")
-    public ResponseEntity userRegistration(@RequestBody Account account) {
-        if (accountService.addAccount(account) == null) {
-            return ResponseEntity.badRequest().body("Bad Request");
-        }
-        return ResponseEntity.ok(accountService.addAccount(account));
+    public ResponseEntity<Object> userRegistration(@RequestBody Account account) {
+        Account retrievedAccount = accountService.addAccount(account);
+        return ResponseEntity.ok(retrievedAccount);
     }
 
     @PostMapping("/login")
-    public ResponseEntity userLogin(@RequestBody Account account) {
-        if (accountService.getAccountByUsernameAndPassword(account) == null) {
-            return ResponseEntity.status(401).body("Try again");
+    public ResponseEntity<Object> userLogin(@RequestBody Account account) {
+        String username = account.getUsername();
+        String password = account.getPassword();
+        Account retrievedAccount = accountService.login(username, password);
+        if (retrievedAccount == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("UNAUTHORIZED");
         }
-        return ResponseEntity.ok(accountService.getAccountByUsernameAndPassword(account));
+        return ResponseEntity.ok(accountService.login(account.getUsername(), account.getPassword()));
     }
 
     @PostMapping("/messages")
-    public ResponseEntity createMessage(@RequestBody Message message) {
+    public ResponseEntity<Object> createMessage(@RequestBody Message message) {
         if (messageService.addMessage(message) == null) {
             return ResponseEntity.badRequest().body("Bad Request");
         }
